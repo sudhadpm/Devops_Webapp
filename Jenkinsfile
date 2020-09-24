@@ -2,7 +2,8 @@ node {
 
     stage('Code Checkout'){
 
-      git credentialsId: 'githubcreds', url: 'https://github.com/sudhadpm/Devops_Webapp.git'  
+      git credentialsId: 'githubcreds', url: 'https://github.com/sudhadpm/Devops_Webapp.git'
+       
 
     }
 
@@ -14,9 +15,9 @@ node {
 
        
 
-        def mavenHome = tool name: 'maven-3' , type:'maven'
+        def mavenHome = tool name: 'maven-3' , type: 'maven'
 
-        def mavenCMD = "{mavenHome}/bin/mvn"
+        def mavenCMD = "${mavenHome}/bin/mvn"
 
       sh "${mavenCMD} clean package"
 
@@ -28,7 +29,7 @@ node {
 
     stage('Build Docker Image'){
 
-        sh 'sudo docker build -t sudhadpm/devopsjenkins:1.0.0.0 .'
+        sh 'sudo -n docker build -t sudhadpm/devopsjenkins:1.0.0.0 .'
 
     }
 
@@ -36,9 +37,8 @@ node {
 
     stage("Docker"){
 
-        withCredentials([string(credentialsId: 'dockerHubcred', variable: 'dockerHubCreds')]) {
-
-        sh 'sudo docker login -u sudhadpm -p ${dockerHubcred}'
+       withCredentials([string(credentialsId: 'sudhadpm', variable: 'dockerHubcred')]) {
+       sh 'sudo docker login -u sudhadpm -p ${dockerHubcred}'
 
 }
 
